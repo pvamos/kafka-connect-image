@@ -1,0 +1,50 @@
+# Build artifacts and logs
+*.log
+*.tmp
+*.swp
+*.swo
+*.tar
+*.gz
+*.zip
+*.tgz
+
+# Local env / overrides
+.env
+.env.local
+.env.*
+*.local.env
+*.private.env
+
+# Private deployment values
+private/
+secrets/
+*.private.yaml
+*.private.yml
+*.local.yaml
+*.local.yml
+
+# GitHub/build tokens
+.github_token
+github_token
+*_token
+*token*
+
+# Kubernetes / registry material
+*.kubeconfig
+kubeconfig
+*-secret.yaml
+secret-*.yaml
+*.dockerconfigjson
+
+# IDE / editor files
+.vscode/
+.idea/
+*.iml
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Backup files
+*~
+*.bak
