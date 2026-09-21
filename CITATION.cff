@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+message: "If you use this software in research, please cite the archived software release and the associated thesis."
+type: software
+authors:
+  - family-names: "Vámos"
+    given-names: "Péter"
+    orcid: "https://orcid.org/0009-0004-8554-5014"
+    affiliation: "John Wesley Theological College, Budapest"
+title: "Kafka Connect image for an environmental sensor data pipeline"
+version: "1.0.0"
+repository-code: "https://github.com/pvamos/kafka-connect-image"
+license: MIT
+keywords:
+  - "environmental monitoring"
+  - "sensor network"
+  - "Kafka Connect"
+  - "Apache Kafka"
+  - "container image"
+  - "MQTT"
+  - "S3"
+  - "Strimzi"
+  - "data pipeline"
+abstract: >-
+  Custom Kafka Connect container image that assembles the MQTT source connector, S3 sink connector and project-specific environmental sensor SMT used by the environmental monitoring data pipeline.

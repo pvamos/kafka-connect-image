@@ -6,7 +6,7 @@
 FROM docker.io/library/maven:3.9.12-eclipse-temurin-17 AS smt-build
 
 ARG SMT_REPO="https://github.com/pvamos/envsensor-kafka-smt.git"
-ARG SMT_REF="main"
+ARG SMT_REF="v1.0.0"
 ARG SMT_SUBDIR="."              # if the Maven project is in a subdir, set it here
 ARG SMT_MVN_ARGS="-DskipTests package"
 ARG SMT_JAR_GLOB="target/*-all.jar"
@@ -47,7 +47,7 @@ RUN set -eux; \
 # Copy the jar to a stable location for the final stage
 RUN set -eux; \
     JAR="$(ls -1 ${SMT_JAR_GLOB} | head -n1)"; \
-    cp -v "${JAR}" /work/envsensor-smt.jar
+    cp -v "${JAR}" /work/envsensor-kafka-smt.jar
 
 
 # ------------------------------------------------------------------------------
@@ -89,10 +89,10 @@ RUN set -eux; \
     test -d "/opt/kafka/plugins/confluentinc-kafka-connect-s3-${CONFLUENT_S3_VERSION}/lib"
 
 # -------------------- envsensor SMT plugin --------------------
-RUN mkdir -p /opt/kafka/plugins/envsensor-smt
+RUN mkdir -p /opt/kafka/plugins/envsensor-kafka-smt
 
 # Copy the built jar from stage 1
-COPY --from=smt-build /work/envsensor-smt.jar /opt/kafka/plugins/envsensor-smt/envsensor-smt.jar
+COPY --from=smt-build /work/envsensor-kafka-smt.jar /opt/kafka/plugins/envsensor-kafka-smt/envsensor-kafka-smt.jar
 
 # Permissions for Connect user (uid 1001)
 RUN set -eux; \

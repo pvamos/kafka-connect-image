@@ -61,7 +61,7 @@ Installed/downloaded components:
 | Apache Kafka / Kafka Connect runtime | included in Strimzi image | base image | Apache License 2.0 |
 | Stream Reactor MQTT Source connector | `STREAM_REACTOR_VERSION=11.3.0` from `lensesio/stream-reactor` release ZIP | `/opt/kafka/plugins/mqtt` | Apache License 2.0 according to the Stream Reactor project |
 | Confluent Amazon S3 Sink Connector | `CONFLUENT_S3_VERSION=12.0.0` from Confluent Hub ZIP | `/opt/kafka/plugins/confluentinc-kafka-connect-s3-12.0.0` | Confluent Community License Version 1.0 |
-| `envsensor-kafka-smt` | built from `https://github.com/pvamos/envsensor-kafka-smt.git` | `/opt/kafka/plugins/envsensor-smt/envsensor-smt.jar` | MIT for project code, plus shaded protobuf license notice |
+| `envsensor-kafka-smt` | built from `https://github.com/pvamos/envsensor-kafka-smt.git` | `/opt/kafka/plugins/envsensor-kafka-smt/envsensor-kafka-smt.jar` | MIT for project code, plus shaded protobuf license notice |
 
 ---
 
@@ -229,7 +229,7 @@ Current Dockerfile defaults:
 
 ```text
 SMT_REPO=https://github.com/pvamos/envsensor-kafka-smt.git
-SMT_REF=main
+SMT_REF=v1.0.0
 SMT_SUBDIR=.
 SMT_MVN_ARGS=-DskipTests package
 SMT_JAR_GLOB=target/*-all.jar
@@ -238,7 +238,7 @@ SMT_JAR_GLOB=target/*-all.jar
 Installed path in the current Dockerfile:
 
 ```text
-/opt/kafka/plugins/envsensor-smt/envsensor-smt.jar
+/opt/kafka/plugins/envsensor-kafka-smt/envsensor-kafka-smt.jar
 ```
 
 License:
