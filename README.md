@@ -2,6 +2,8 @@
 
 [https://github.com/pvamos/kafka-connect-image](https://github.com/pvamos/kafka-connect-image)
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22884349.svg)](https://doi.org/10.5281/zenodo.22884349)
+
 Custom Kafka Connect container image for the **envsensor** platform.
 
 The image is based on the Strimzi Kafka Connect base image and adds the connector plugins needed by the environmental monitoring pipeline:
@@ -727,14 +729,14 @@ kubectl -n kafka describe pod <connect-pod>
 
 ## 📚 Citation and archival release
 
-This repository is being prepared as a versioned research-software artifact associated with the BSc thesis above.
+**v1.0.0** is archived in Zenodo as a version-specific research-software record.
 
+* **Version DOI:** [10.5281/zenodo.22884350](https://doi.org/10.5281/zenodo.22884350)
+* **All-versions DOI:** [10.5281/zenodo.22884349](https://doi.org/10.5281/zenodo.22884349)
 * `CITATION.cff` provides GitHub-compatible citation metadata.
-* `.zenodo.json` provides Zenodo-specific metadata and links this software to the thesis with `isSupplementTo`.
-* The planned first archival software release is **v1.0.0**.
-* After Zenodo mints the software DOI, add the DOI badge and DOI to this README and to `CITATION.cff` without creating a new software version solely for that metadata backlink.
+* `.zenodo.json` contains the Zenodo release metadata and links this software to the thesis with `isSupplementTo`.
 
-Until the software DOI exists, cite the thesis DOI and the repository URL.
+Use the **version DOI** when citing the exact `v1.0.0` release. The all-versions DOI resolves to the latest archived release of this software.
 
 ---
 
