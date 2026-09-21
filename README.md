@@ -28,6 +28,7 @@ The image is intended to be used by a Strimzi-managed `KafkaConnect` cluster and
 **Péter Vámos**
 
 * [https://github.com/pvamos](https://github.com/pvamos)
+* [ORCID: 0009-0004-8554-5014](https://orcid.org/0009-0004-8554-5014)
 * [https://linkedin.com/in/pvamos](https://linkedin.com/in/pvamos)
 * [pvamos@gmail.com](mailto:pvamos@gmail.com)
 
@@ -39,6 +40,14 @@ This project is part of the infrastructure/software stack supporting the author'
 for the **Expert in Applied Environmental Studies BSc** program at **John Wesley Theological College, Budapest**.
 
 The image is used in an environmental monitoring data pipeline built around ESP32 sensor nodes, VerneMQ MQTT, Kafka, Kafka Connect, S3-compatible object storage, ClickHouse and Grafana.
+
+
+**Thesis:** *Környezeti paraméterek mérése a tudomány és technológia fejlődésének tükrében – Egy skálázható szenzorhálózat megvalósításának tanulságai*<br>
+**Thesis DOI:** [10.5281/zenodo.22843091](https://doi.org/10.5281/zenodo.22843091)<br>
+**Research project overview:** [environmental-sensor-network](https://github.com/pvamos/environmental-sensor-network)<br>
+**Author ORCID:** [0009-0004-8554-5014](https://orcid.org/0009-0004-8554-5014)
+
+This repository is one implementation component of the broader environmental sensor network. The project overview repository documents the end-to-end architecture, the role of each software component, research outputs, archival releases and reproducibility information.
 
 ---
 
@@ -88,23 +97,17 @@ It downloads and installs:
 | Component | Version / source | Installed under |
 |---|---|---|
 | Strimzi Kafka Connect runtime | `quay.io/strimzi/kafka:0.49.1-kafka-4.1.1` | base image |
-| `envsensor-kafka-smt` | `https://github.com/pvamos/envsensor-kafka-smt.git`, default ref `main` | `/opt/kafka/plugins/envsensor-smt` |
+| `envsensor-kafka-smt` | `https://github.com/pvamos/envsensor-kafka-smt.git`, default ref `v1.0.0` | `/opt/kafka/plugins/envsensor-kafka-smt` |
 | Lenses Stream Reactor MQTT Source | `STREAM_REACTOR_VERSION=11.3.0` | `/opt/kafka/plugins/mqtt` |
 | Confluent Amazon S3 Sink Connector | `CONFLUENT_S3_VERSION=12.0.0` | `/opt/kafka/plugins/confluentinc-kafka-connect-s3-12.0.0` |
 
-The current Dockerfile copies the SMT JAR into:
-
-```text
-/opt/kafka/plugins/envsensor-smt/envsensor-smt.jar
-```
-
-That path still uses the older artifact/plugin directory name `envsensor-smt`, even though the public repository name is `envsensor-kafka-smt`.
-
-This is operationally fine because Kafka Connect plugin discovery scans JARs under `/opt/kafka/plugins`. If you want naming consistency, rename the path in the Dockerfile to:
+The archival release pins the project SMT to the `v1.0.0` Git tag and installs it under the repository-aligned path:
 
 ```text
 /opt/kafka/plugins/envsensor-kafka-smt/envsensor-kafka-smt.jar
 ```
+
+Pinning the SMT tag avoids silently rebuilding the container with a later `main` branch state.
 
 ---
 
@@ -116,8 +119,8 @@ The final Kafka Connect image contains:
 /opt/kafka/plugins/
 ├── mqtt/                                     # Stream Reactor MQTT connector
 ├── confluentinc-kafka-connect-s3-12.0.0/     # Confluent Amazon S3 Sink Connector
-└── envsensor-smt/                            # envsensor Kafka SMT plugin
-    └── envsensor-smt.jar
+└── envsensor-kafka-smt/                      # envsensor Kafka SMT plugin
+    └── envsensor-kafka-smt.jar
 ```
 
 Expected plugin classes include:
@@ -217,7 +220,7 @@ The resulting image is intended for:
 ```bash
 IMAGE="registry.example.com/example/kafka-connect:0.0.0"
 
-podman build   --format docker   --build-arg SMT_CACHEBUST="$(date +%s)"   --build-arg SMT_REPO="https://github.com/pvamos/envsensor-kafka-smt.git"   --build-arg SMT_REF="main"   -t "${IMAGE}"   .
+podman build   --format docker   --build-arg SMT_CACHEBUST="$(date +%s)"   --build-arg SMT_REPO="https://github.com/pvamos/envsensor-kafka-smt.git"   --build-arg SMT_REF="v1.0.0"   -t "${IMAGE}"   .
 
 podman push "${IMAGE}"
 ```
@@ -240,7 +243,7 @@ Build:
 ```bash
 IMAGE="registry.example.com/example/kafka-connect:0.0.0"
 
-podman build   --format docker   --build-arg SMT_CACHEBUST="$(date +%s)"   --secret id=github_token,src=.github_token   --build-arg SMT_REPO="https://github.com/pvamos/envsensor-kafka-smt.git"   --build-arg SMT_REF="main"   -t "${IMAGE}"   .
+podman build   --format docker   --build-arg SMT_CACHEBUST="$(date +%s)"   --secret id=github_token,src=.github_token   --build-arg SMT_REPO="https://github.com/pvamos/envsensor-kafka-smt.git"   --build-arg SMT_REF="v1.0.0"   -t "${IMAGE}"   .
 ```
 
 Do **not** commit `.github_token`.
@@ -252,7 +255,7 @@ The Dockerfile supports these build arguments:
 | Build argument | Default | Purpose |
 |---|---|---|
 | `SMT_REPO` | `https://github.com/pvamos/envsensor-kafka-smt.git` | Git repository containing the SMT Maven project |
-| `SMT_REF` | `main` | branch, tag or commit to build |
+| `SMT_REF` | `v1.0.0` | branch, tag or commit to build |
 | `SMT_SUBDIR` | `.` | Maven project subdirectory |
 | `SMT_MVN_ARGS` | `-DskipTests package` | Maven build arguments |
 | `SMT_JAR_GLOB` | `target/*-all.jar` | shaded JAR glob |
@@ -264,7 +267,7 @@ The Dockerfile supports these build arguments:
 Example:
 
 ```bash
-podman build   --format docker   --build-arg SMT_REF="v0.1.0"   --build-arg STREAM_REACTOR_VERSION="11.3.0"   --build-arg CONFLUENT_S3_VERSION="12.0.0"   -t registry.example.com/example/kafka-connect:0.1.0   .
+podman build   --format docker   --build-arg SMT_REF="v1.0.0"   --build-arg STREAM_REACTOR_VERSION="11.3.0"   --build-arg CONFLUENT_S3_VERSION="12.0.0"   -t registry.example.com/example/kafka-connect:0.1.0   .
 ```
 
 ---
@@ -438,7 +441,7 @@ For the public SMT repository:
 
 ```bash
 --build-arg SMT_REPO="https://github.com/pvamos/envsensor-kafka-smt.git"
---build-arg SMT_REF="main"
+--build-arg SMT_REF="v1.0.0"
 ```
 
 For a private branch/tag/commit:
@@ -468,7 +471,7 @@ Use versions compatible with your Kafka Connect runtime.
 #### Step 4: build and push
 
 ```bash
-podman build   --format docker   --build-arg SMT_CACHEBUST="$(date +%s)"   --build-arg SMT_REPO="https://github.com/pvamos/envsensor-kafka-smt.git"   --build-arg SMT_REF="main"   -t "${IMAGE}"   .
+podman build   --format docker   --build-arg SMT_CACHEBUST="$(date +%s)"   --build-arg SMT_REPO="https://github.com/pvamos/envsensor-kafka-smt.git"   --build-arg SMT_REF="v1.0.0"   -t "${IMAGE}"   .
 
 podman push "${IMAGE}"
 ```
@@ -520,7 +523,7 @@ Example:
 ```bash
 export IMAGE='<your-registry>/<your-project>/kafka-connect:<your-tag>'
 export SMT_REPO='https://github.com/pvamos/envsensor-kafka-smt.git'
-export SMT_REF='main'
+export SMT_REF='v1.0.0'
 export STREAM_REACTOR_VERSION='11.3.0'
 export CONFLUENT_S3_VERSION='12.0.0'
 ```
@@ -656,7 +659,7 @@ kubectl -n kafka logs <connect-pod> --tail=200
 If the repo is public, build without the token secret:
 
 ```bash
-podman build   --build-arg SMT_REPO="https://github.com/pvamos/envsensor-kafka-smt.git"   --build-arg SMT_REF="main"   -t registry.example.com/example/kafka-connect:0.0.0   .
+podman build   --build-arg SMT_REPO="https://github.com/pvamos/envsensor-kafka-smt.git"   --build-arg SMT_REF="v1.0.0"   -t registry.example.com/example/kafka-connect:0.0.0   .
 ```
 
 If the repo/ref is private, provide a token:
@@ -684,7 +687,7 @@ kubectl -n kafka exec -it <connect-pod> --   find /opt/kafka/plugins -maxdepth 4
 Expected current path:
 
 ```text
-/opt/kafka/plugins/envsensor-smt/envsensor-smt.jar
+/opt/kafka/plugins/envsensor-kafka-smt/envsensor-kafka-smt.jar
 ```
 
 ### Kafka Connect cannot find the MQTT Source connector
@@ -722,12 +725,23 @@ kubectl -n kafka describe pod <connect-pod>
 
 ---
 
+## 📚 Citation and archival release
+
+This repository is being prepared as a versioned research-software artifact associated with the BSc thesis above.
+
+* `CITATION.cff` provides GitHub-compatible citation metadata.
+* `.zenodo.json` provides Zenodo-specific metadata and links this software to the thesis with `isSupplementTo`.
+* The planned first archival software release is **v1.0.0**.
+* After Zenodo mints the software DOI, add the DOI badge and DOI to this README and to `CITATION.cff` without creating a new software version solely for that metadata backlink.
+
+Until the software DOI exists, cite the thesis DOI and the repository URL.
+
+---
+
 ## 🧭 Roadmap / recommended improvements
 
-* Rename SMT plugin directory from `envsensor-smt` to `envsensor-kafka-smt` for consistency with the public repository.
 * Add a `Makefile` for common build/push commands.
 * Add a public `build.env.example`.
-* Add a `THIRD_PARTY_NOTICES.md` file for image contents.
 * Add CI to build the image with public placeholder values.
 * Pin connector checksums for downloaded release archives.
 * Add `ARG` values for Strimzi base image version.
